@@ -1,0 +1,1 @@
+The bundled PDF viewer and worker include PDF.js (`pdfjs-dist`), Copyright Mozilla Foundation, licensed under the Apache License 2.0. Its license is reproduced in PDFJS-LICENSE.txt. The extension itself is licensed under MIT; see LICENSE.

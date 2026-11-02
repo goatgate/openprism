@@ -1,0 +1,179 @@
+{
+  "name": "open-prism-vscode",
+  "displayName": "Open Prism",
+  "description": "An integrated LaTeX workspace with PDF preview, reusable templates, and an OpenAI-compatible assistant including NVIDIA Build.",
+  "version": "0.1.0",
+  "publisher": "open-prism-local",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goatgate/openprism"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "latex",
+    "nvidia",
+    "openai",
+    "templates",
+    "pdf"
+  ],
+  "main": "./dist/extension.cjs",
+  "activationEvents": [
+    "onLanguage:latex"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    },
+    "virtualWorkspaces": false
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "openPrism",
+          "title": "Open Prism",
+          "icon": "media/prism.svg"
+        }
+      ]
+    },
+    "views": {
+      "openPrism": [
+        {
+          "id": "openPrism.workspace",
+          "name": "Assistant & Templates",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "openPrism.open",
+        "title": "Open Prism: Open Workspace"
+      },
+      {
+        "command": "openPrism.setApiKey",
+        "title": "Open Prism: Securely Set API Key"
+      },
+      {
+        "command": "openPrism.deleteApiKey",
+        "title": "Open Prism: Delete API Key for Current Endpoint"
+      },
+      {
+        "command": "openPrism.configure",
+        "title": "Open Prism: Configure Provider"
+      },
+      {
+        "command": "openPrism.compile",
+        "title": "Open Prism: Compile & Preview PDF",
+        "icon": "$(play)"
+      },
+      {
+        "command": "openPrism.ask",
+        "title": "Open Prism: Ask About Selection or Document"
+      },
+      {
+        "command": "openPrism.saveTemplate",
+        "title": "Open Prism: Save Document as Template"
+      },
+      {
+        "command": "openPrism.newFromTemplate",
+        "title": "Open Prism: New Document from Template"
+      },
+      {
+        "command": "openPrism.importTemplate",
+        "title": "Open Prism: Import Template from .tex File"
+      },
+      {
+        "command": "openPrism.deleteTemplate",
+        "title": "Open Prism: Delete Custom Template"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "openPrism.compile",
+          "when": "resourceExtname == .tex",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Open Prism",
+      "properties": {
+        "openPrism.apiBaseUrl": {
+          "type": "string",
+          "default": "https://integrate.api.nvidia.com/v1",
+          "scope": "machine",
+          "description": "OpenAI-compatible base URL, including /v1. Keys are stored separately per endpoint in VS Code SecretStorage. HTTPS required except localhost."
+        },
+        "openPrism.model": {
+          "type": "string",
+          "default": "meta/llama-3.3-70b-instruct",
+          "scope": "machine",
+          "description": "Model ID supported by your provider. NVIDIA model availability depends on your account."
+        },
+        "openPrism.compiler": {
+          "type": "string",
+          "enum": [
+            "pdflatex",
+            "xelatex",
+            "lualatex"
+          ],
+          "default": "pdflatex",
+          "description": "Local TeX Live or MiKTeX engine. Must be on the extension host PATH."
+        },
+        "openPrism.rootFile": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "Optional main .tex file relative to the workspace folder. Empty compiles the active .tex document."
+        },
+        "openPrism.compileOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Compile and refresh PDF after saving a .tex file."
+        },
+        "openPrism.maxContextCharacters": {
+          "type": "number",
+          "default": 30000,
+          "minimum": 1000,
+          "maximum": 200000,
+          "description": "Maximum characters shared from the active document after you send a prompt."
+        },
+        "openPrism.maxOutputTokens": {
+          "type": "number",
+          "default": 2048,
+          "minimum": 128,
+          "maximum": 32768,
+          "description": "Maximum response tokens requested from the provider."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "tsc --noEmit",
+    "test": "npm run build && node build.mjs --test && node --test test-dist/*.test.cjs",
+    "test:webview": "npm run build && node test/browser-smoke.cjs",
+    "package": "npm run check && npm run build && vsce package --no-dependencies",
+    "vscode:prepublish": "npm run build"
+  },
+  "dependencies": {
+    "pdfjs-dist": "4.10.38"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "1.95.0",
+    "@vscode/vsce": "^3.7.1",
+    "esbuild": "^0.27.2",
+    "playwright": "^1.58.2",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,10 @@
+src/**
+test/**
+test-dist/**
+node_modules/**
+*.vsix
+tsconfig.json
+build.mjs
+package-lock.json
+dist/*.map
+.vscode/**
